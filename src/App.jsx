@@ -1,121 +1,178 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+import { useMemo, useState } from 'react'
+import { AnimatePresence } from 'framer-motion'
+import {
+  BrowserRouter,
+  Navigate,
+  Route,
+  Routes,
+  useLocation,
+  useNavigate,
+} from 'react-router-dom'
+import Footer from './components/Footer'
+import MovieModal from './components/MovieModal'
+import Navbar from './components/Navbar'
+import PageTransition from './components/PageTransition'
+import {
+  allGenres,
+  allYears,
+  featuredMovie,
+  getMoviesByIds,
+  movies,
+  ratingFilters,
+  rowConfigs,
+} from './data/mockMovies'
+import HomePage from './pages/HomePage'
+import MoviesPage from './pages/MoviesPage'
+import MyListPage from './pages/MyListPage'
+import SearchPage from './pages/SearchPage'
+import TVShowsPage from './pages/TVShowsPage'
 
-function App() {
-  const [count, setCount] = useState(0)
+function AppShell() {
+  const [selectedMovie, setSelectedMovie] = useState(null)
+  const [favorites, setFavorites] = useState([])
+  const [searchQuery, setSearchQuery] = useState('')
+  const location = useLocation()
+  const navigate = useNavigate()
+
+  const rowData = useMemo(
+    () =>
+      rowConfigs.map((row) => ({
+        ...row,
+        movies: getMoviesByIds(row.movieIds),
+      })),
+    [],
+  )
+
+  const onlyMovies = useMemo(
+    () => movies.filter((movie) => movie.type === 'movie'),
+    [],
+  )
+
+  const onlyShows = useMemo(() => movies.filter((movie) => movie.type === 'tv'), [])
+
+  const favoriteMovies = useMemo(
+    () => movies.filter((movie) => favorites.includes(movie.id)),
+    [favorites],
+  )
+
+  const handleToggleFavorite = (movieId) => {
+    setFavorites((current) =>
+      current.includes(movieId)
+        ? current.filter((id) => id !== movieId)
+        : [...current, movieId],
+    )
+  }
+
+  const handleSearchSubmit = (rawQuery) => {
+    const query = rawQuery.trim()
+    navigate(query ? `/search?q=${encodeURIComponent(query)}` : '/search')
+  }
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+    <div className="relative min-h-screen overflow-x-hidden bg-zinc-950 text-zinc-100">
+      <div className="pointer-events-none fixed inset-0 z-0 bg-[radial-gradient(circle_at_15%_15%,rgba(245,158,11,0.16),transparent_34%),radial-gradient(circle_at_80%_2%,rgba(56,189,248,0.12),transparent_30%),linear-gradient(180deg,#090909,#050505)]" />
 
-      <div className="ticks"></div>
+      <Navbar
+        searchQuery={searchQuery}
+        onSearchChange={setSearchQuery}
+        onSearchSubmit={handleSearchSubmit}
+      />
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
+      <div className="relative z-10">
+        <AnimatePresence mode="wait">
+          <Routes location={location} key={`${location.pathname}${location.search}`}>
+            <Route
+              path="/"
+              element={
+                <PageTransition>
+                  <HomePage
+                    featuredMovie={featuredMovie}
+                    rowData={rowData}
+                    onSelectMovie={setSelectedMovie}
+                    onToggleFavorite={handleToggleFavorite}
+                    favorites={favorites}
+                  />
+                </PageTransition>
+              }
+            />
+            <Route
+              path="/movies"
+              element={
+                <PageTransition>
+                  <MoviesPage
+                    movies={onlyMovies}
+                    onSelectMovie={setSelectedMovie}
+                    onToggleFavorite={handleToggleFavorite}
+                    favorites={favorites}
+                  />
+                </PageTransition>
+              }
+            />
+            <Route
+              path="/tv-shows"
+              element={
+                <PageTransition>
+                  <TVShowsPage
+                    shows={onlyShows}
+                    onSelectMovie={setSelectedMovie}
+                    onToggleFavorite={handleToggleFavorite}
+                    favorites={favorites}
+                  />
+                </PageTransition>
+              }
+            />
+            <Route
+              path="/my-list"
+              element={
+                <PageTransition>
+                  <MyListPage
+                    favorites={favorites}
+                    favoriteMovies={favoriteMovies}
+                    onSelectMovie={setSelectedMovie}
+                    onToggleFavorite={handleToggleFavorite}
+                  />
+                </PageTransition>
+              }
+            />
+            <Route
+              path="/search"
+              element={
+                <PageTransition>
+                  <SearchPage
+                    movies={movies}
+                    genres={allGenres}
+                    years={allYears}
+                    ratingFilters={ratingFilters}
+                    onSelectMovie={setSelectedMovie}
+                    onToggleFavorite={handleToggleFavorite}
+                    favorites={favorites}
+                  />
+                </PageTransition>
+              }
+            />
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </AnimatePresence>
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
+        <Footer />
+      </div>
+
+      <MovieModal
+        movie={selectedMovie}
+        isOpen={Boolean(selectedMovie)}
+        onClose={() => setSelectedMovie(null)}
+        isFavorite={selectedMovie ? favorites.includes(selectedMovie.id) : false}
+        onToggleFavorite={handleToggleFavorite}
+      />
+    </div>
+  )
+}
+
+function App() {
+  return (
+    <BrowserRouter>
+      <AppShell />
+    </BrowserRouter>
   )
 }
 
