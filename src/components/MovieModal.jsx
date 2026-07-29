@@ -60,7 +60,7 @@ function MovieModal({
               <img
                 src={movie.poster}
                 alt={`${movie.title} poster`}
-                className="h-[360px] w-full rounded-2xl object-cover md:h-full"
+                className="h-360px w-full rounded-2xl object-cover md:h-full"
               />
 
               <div>

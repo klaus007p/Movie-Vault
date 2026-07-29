@@ -3,6 +3,8 @@ import { LogIn } from 'lucide-react'
 
 
 const initialState = {
+    user: null,
+    isLoggedIn: false,
     status: false,
     userData: null
 }
@@ -12,11 +14,15 @@ const authSlice = createSlice({
     initialState,
     reducers: {
         login: (state, action) => {
+            state.user = action.payload;
+            state.isLoggedIn = true
             state.status = true;
             state.userData = action.payload.userData
         },
 
         logout: (state) => {
+            state.user = null;
+            state.isLoggedIn = false;
             state.status = false;
             state.userData = null;
         }

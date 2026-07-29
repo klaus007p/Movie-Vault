@@ -7,7 +7,7 @@ function HeroSection({ movie, onPlay, onMoreInfo }) {
       <img
         src={movie.backdrop}
         alt={`${movie.title} backdrop`}
-        className="h-[380px] w-full object-cover sm:h-[450px] lg:h-[520px]"
+        className="h-95  w-full object-cover sm:h-450px lg:h-520px"
       />
       <div className="absolute inset-0 bg-gradient-to-t from-black via-black/70 to-black/15" />
 

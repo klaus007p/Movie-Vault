@@ -17,7 +17,7 @@ function MyListPage({ favorites, favoriteMovies, onSelectMovie, onToggleFavorite
         <motion.div
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
-          className="glass flex min-h-[240px] flex-col items-center justify-center gap-3 rounded-3xl border border-dashed border-white/20"
+          className="glass flex min-h-240px flex-col items-center justify-center gap-3 rounded-3xl border border-dashed border-white/20"
         >
           <div className="rounded-full bg-white/10 p-3 text-zinc-200">
             <Bookmark size={22} />
