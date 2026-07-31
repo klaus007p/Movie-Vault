@@ -26,6 +26,8 @@ import MoviesPage from './pages/MoviesPage'
 import MyListPage from './pages/MyListPage'
 import SearchPage from './pages/SearchPage'
 import TVShowsPage from './pages/TVShowsPage'
+// import { login, logout} from './store/authSlice' 
+
 
 function AppShell() {
   const [selectedMovie, setSelectedMovie] = useState(null)
