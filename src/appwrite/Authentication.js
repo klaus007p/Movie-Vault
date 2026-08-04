@@ -33,6 +33,43 @@ export class AuthServive{
         }
     }
 
-    // Login In Account
+    // Login In User Account
+
+    async login({ email, password }){
+        try {
+            return await this.account.createEmailPasswordSession(email, password);   // Email and Pass.. Sessions are created
+        } catch (error) {
+            throw error;  // If login failed throws an error
+        }
+    }
+
+    // Get Current User 
+
+    async getCurrentUser() {
+        try {
+            await this.account.get();
+        } catch (error) {
+            console.log("Appwrite Service Failed! Can't Fetch User Details", error);
+            
+        }
+
+        return null;
+    }
+
+    // Logout From User Account
+
+    async logout() {
+        try {
+            await this.account.deleteSessions();
+        } catch (error) {
+            console.log("Appwrite Service Failed! Can't Fetch User Details", error);
+            
+        }
+    }
 
 }
+
+
+const authServive = new AuthServive() // Creates a new session
+
+export {authServive};;
