@@ -26,7 +26,21 @@ import MoviesPage from './pages/MoviesPage'
 import MyListPage from './pages/MyListPage'
 import SearchPage from './pages/SearchPage'
 import TVShowsPage from './pages/TVShowsPage'
+
+
 // import { login, logout} from './store/authSlice' 
+// import { authServive } from './appwrite/Authentication'
+
+// const user = await authServive.getCurrentUser();
+
+// if (user) {
+//   console.log("User already logged in:", user);
+// } else {
+//   await authServive.login({ email, password });
+//   // getCurrentUser()
+// }
+// await authServive.logout();
+
 
 
 function AppShell() {

@@ -1,5 +1,5 @@
 import { conf } from '../conf/conf';
-import { Client, Account, Id } from 'appwrite';
+import { Client, Account, ID } from 'appwrite';
 
 export class AuthServive{
 
@@ -18,7 +18,6 @@ export class AuthServive{
 
     async createAccount({ email, password, userName}) {
         try {
-
             const userAccount = await this.account.create
             (ID.unique(), email, password, userName);
             
@@ -28,8 +27,8 @@ export class AuthServive{
                 return userAccount;
             }
         } catch (error) {
-            console.log("Invalid Account Details: ", error);
-            // throw error
+            
+            throw error;
         }
     }
 
@@ -47,7 +46,7 @@ export class AuthServive{
 
     async getCurrentUser() {
         try {
-            await this.account.get();
+           return await this.account.get();
         } catch (error) {
             console.log("Appwrite Service Failed! Can't Fetch User Details", error);
             
